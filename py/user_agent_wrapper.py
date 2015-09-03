@@ -14,11 +14,11 @@ import json
 
 def parseFromFile(filePath, delimiter):
     "Parse user agents using a file input"
-    return filePath
+    return parseUaString(filePath, delimiter)
 
 
 def parseFromString(uaString, delimiter):
-    "Parse user agents using a file input."
+    "Parse user agents using a file input"
     return parseUaString(uaString, delimiter)
 
 
@@ -47,7 +47,32 @@ def parseUaString(str, delimiter):
     # print json.dumps(result_dict['device'], separators="," ":")
     # {'family': 'iPhone'}
     # print '__name__ = ', __name__
-    if (delimiter == "json"):
+    if delimiter == "json":
         return uaJson
+    if delimiter == "\t" or delimiter == ",":
+        device = json.dumps(result_dict['device']['family'], separators="," ":")
+        os = json.dumps(result_dict['os']['family'], separators="," ":")
+        os_major = json.dumps(result_dict['os']['major'], separators="," ":")
+        os_minor = json.dumps(result_dict['os']['minor'], separators="," ":")
+        os_patch_minor = json.dumps(result_dict['os']['patch_minor'], separators="," ":")
+        os_patch = json.dumps(result_dict['os']['patch'], separators="," ":")
+        browser = json.dumps(result_dict['user_agent']['family'], separators="," ":")
+        browser_major = json.dumps(result_dict['user_agent']['major'], separators="," ":")
+        browser_minor = json.dumps(result_dict['user_agent']['minor'], separators="," ":")
+        browser_patch = json.dumps(result_dict['user_agent']['patch'], separators="," ":")
+        user_agent = json.dumps(result_dict['user_agent'], separators="," ":")
+
+        return device + delimiter+\
+                os+ delimiter+\
+                os_major+ delimiter+\
+                os_minor, delimiter,\
+                os_patch_minor, delimiter,\
+                os_patch, delimiter,\
+                browser, delimiter,\
+                browser_major, delimiter,\
+                browser_minor, delimiter,\
+                browser_patch, delimiter,\
+                user_agent + "\n"
+
     else:
         return "Unknown delimiter"
