@@ -1,7 +1,7 @@
 """
     Wrapper around the python lib - pass in a string or a file of user agent strings
     Run:
-        # python main.py <inputFormat: string|file> <uaString|filePath> <delimiter: \t|,|json>
+        # python main.py <inputFormat: string|file> <uaString|inFilePath> <delimiter: \t|,|json> <outFilePath>
 
     E.g. from file:
     python main.py file ../test_resources/random_user_agent_strings.txt , ../test_resources/something_nice
