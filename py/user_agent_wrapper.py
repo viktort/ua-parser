@@ -2,7 +2,10 @@
     Wrapper around the python lib - pass in a string or a file of user agent strings
     Run:
         # python main.py <inputFormat: string|file> <uaString|filePath> <delimiter: \t|,|json>
+    When running from file, the output file with generate a file with the following headers:
+    user_agent,device,os,os_major,os_minor,os_patch_minor,os_patch,browser,browser_major,browser_minor,browser_patch
 """
+from numpy.lib.arraysetops import in1d
 
 __author__ = 'viktor.trako@holidayextras.com (Viktor Trako)'
 
@@ -12,9 +15,29 @@ import json
 # print 'Argument List:', str(sys.argv)
 
 
-def parseFromFile(filePath, delimiter):
+def parseFromFile(inFilePath, outFilePath, delimiter):
     "Parse user agents using a file input"
-    return parseUaString(filePath, delimiter)
+    # return parseUaString(filePath, delimiter)
+    inFileOpen = open(inFilePath, "r")
+    outFileOpen = open(outFilePath, "wb")
+    outFileOpen.write("user_agent"+delimiter+\
+                    "device"+delimiter+\
+                      "os"+delimiter+\
+                      "os_major"+delimiter+\
+                      "os_minor"+delimiter+\
+                      "os_patch_minor"+delimiter+\
+                      "os_patch"+delimiter+\
+                      "browser"+ delimiter+\
+                      "browser_major"+ delimiter+\
+                      "browser_minor"+delimiter+\
+                      "browser_patch\n")
+    for line in inFileOpen:
+        parsedUaString = parseUaString(line, delimiter)
+        print 'parsed ua string', str(parsedUaString)
+        outFileOpen.write(str(parsedUaString+'\n'))
+    inFileOpen.close()
+    outFileOpen.close()
+    return inFilePath
 
 
 def parseFromString(uaString, delimiter):
@@ -50,6 +73,7 @@ def parseUaString(str, delimiter):
     if delimiter == "json":
         return uaJson
     if delimiter == "\t" or delimiter == ",":
+        user_agent = json.dumps(result_dict['string'], separators="," ":")
         device = json.dumps(result_dict['device']['family'], separators="," ":")
         os = json.dumps(result_dict['os']['family'], separators="," ":")
         os_major = json.dumps(result_dict['os']['major'], separators="," ":")
@@ -60,19 +84,18 @@ def parseUaString(str, delimiter):
         browser_major = json.dumps(result_dict['user_agent']['major'], separators="," ":")
         browser_minor = json.dumps(result_dict['user_agent']['minor'], separators="," ":")
         browser_patch = json.dumps(result_dict['user_agent']['patch'], separators="," ":")
-        user_agent = json.dumps(result_dict['user_agent'], separators="," ":")
 
-        return device + delimiter+\
+        return user_agent+delimiter+\
+                device + delimiter+\
                 os+ delimiter+\
                 os_major+ delimiter+\
-                os_minor, delimiter,\
-                os_patch_minor, delimiter,\
-                os_patch, delimiter,\
-                browser, delimiter,\
-                browser_major, delimiter,\
-                browser_minor, delimiter,\
-                browser_patch, delimiter,\
-                user_agent + "\n"
+                os_minor+ delimiter+\
+                os_patch_minor+ delimiter+\
+                os_patch+ delimiter+\
+                browser+ delimiter+\
+                browser_major+ delimiter+\
+                browser_minor+ delimiter+\
+                browser_patch
 
     else:
         return "Unknown delimiter"

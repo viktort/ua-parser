@@ -1,24 +1,26 @@
 """User Agent Wrapper unit tests
-
+RUN:
+python -m user_agent_wrapper_test ParseStringWithGivenDelimiter
+or run all:
+python -m user_agent_wrapper_test
 """
 
 __author__ = 'viktor.trako@holidayextras.com (Viktor Trako)'
 
 import os
-import re
 import unittest
-import yaml
 import json
 import user_agent_wrapper
 
 TEST_RESOURCES_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  '../../test_resources')
+                                  '../test_resources')
 
 class ParseStringWithGivenDelimiter(unittest.TestCase):
     def testUserAgentStringsFromFile(self):
-        self.runParseUserAgentStringsFromFile()
-        # self.runParseUserAgentStringsFromFile(os.path.join(
-        #     TEST_RESOURCES_DIR, 'random_user_agent_strings.txt'))
+        # self.runParseUserAgentStringsFromFile()
+        self.runParseUserAgentStringsFromFile(os.path.join(
+            TEST_RESOURCES_DIR, 'random_user_agent_strings.txt'), os.path.join(
+            TEST_RESOURCES_DIR, 'ua_out_file'))
 
     def testUserAgentStringFromString(self):
         self.runParserUserAgentStringFromStringAsJson()
@@ -59,11 +61,10 @@ class ParseStringWithGivenDelimiter(unittest.TestCase):
         self.assertEqual(browser, result['user_agent']['family'])
         self.assertEqual(string, result['string'])
 
-    def runParseUserAgentStringsFromFile(self):
-        userAgentString = "Mozilla/5.0 (Linux; Android 4.2.2; GT-I9195 Build/JDQ39) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.133 Mobile Safari/537.36"
+    def runParseUserAgentStringsFromFile(self, inFilePath, outFilePath):
         delimiter = ","
 
-        result = user_agent_wrapper.parseFromFile(userAgentString, delimiter)
+        result = user_agent_wrapper.parseFromFile(inFilePath, outFilePath, delimiter)
         print result
 
 if __name__ == '__main__':
